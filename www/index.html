@@ -1,11 +1,180 @@
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
-    <meta http-equiv="Refresh" content="0; url='https://example.com/'" />
-    <script>window.location.replace("https://example.com/");</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>BLOXBID - Kayak Video NEXORIA!</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif;-webkit-tap-highlight-color:transparent;user-select:none}
+body{background:#000;color:#fff;overflow:hidden}
+.screen{display:none;width:100vw;height:100vh;overflow:hidden}
+.screen.active{display:block;overflow-y:auto}
+.top-lobby{background:linear-gradient(90deg,#ff00cc,#00e5ff,#7b00ff);padding:12px 14px;display:flex;justify-content:space-between;align-items:center}
+.top-lobby b{font-size:24px;letter-spacing:1px}
+.top-lobby span{background:#000;padding:6px 10px;border-radius:20px;font-size:12px}
+.teman-row{display:flex;gap:10px;padding:10px 14px;overflow-x:auto}
+.teman-item{text-align:center;min-width:55px}
+.pp{width:48px;height:48px;border-radius:50%;background:#333;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:900;border:2px solid #fff}
+.game-row{display:flex;gap:12px;padding:0 14px 12px;overflow-x:auto}
+.game-card{min-width:170px;width:170px;background:#1a1a1a;border-radius:16px;overflow:hidden;flex-shrink:0}
+.game-thumb{height:110px;display:flex;align-items:center;justify-content:center;font-size:50px}
+.game-info{padding:10px}
+.game-info b{font-size:14px}
+.game-info small{color:#aaa;font-size:11px;line-height:1.3;display:block;margin:4px 0}
+.btn{border:0;padding:12px;border-radius:12px;font-weight:900;width:100%;margin-top:8px;font-size:14px}
+.btn-green{background:#22c55e;color:#000}.btn-yellow{background:#facc15;color:#000}.btn-pink{background:#ff69b4;color:#000}
+input{width:100%;padding:12px;border-radius:10px;border:0;font-size:16px;color:#000;margin-top:8px}
+.card{background:#1a1a1a;margin:12px;border-radius:16px;padding:14px}
+.loading{background:#0a0a1a;text-align:center;padding-top:120px}
+.loading h1{color:#ff9d00;font-size:32px;letter-spacing:2px}
+.load{width:80px;height:80px;border:8px solid #333;border-top:8px solid #ff9d00;border-radius:50%;margin:20px auto;animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+#kota{position:relative;width:100vw;height:100vh;background:linear-gradient(#ff9a8b,#ffd6a5,#87ceeb);overflow:hidden}
+#map{position:absolute;width:2200px;height:2200px;background:#7ec850;transition:transform .08s linear}
+.jalan{position:absolute;background:#333}
+.gedung{position:absolute;border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-weight:900;color:#fff;text-align:center;font-size:13px;box-shadow:0 6px 14px rgba(0,0,0,.4);border:2px solid rgba(255,255,255,.3)}
+#player{position:absolute;font-size:52px;z-index:20;text-align:center;line-height:1;filter:drop-shadow(0 4px 4px rgba(0,0,0,.5))}
+#player small{display:block;font-size:10px;background:#000;color:#fff;padding:2px 6px;border-radius:10px;white-space:nowrap}
+.other{position:absolute;font-size:50px;z-index:15;text-align:center}
+.other small{display:block;font-size:10px;background:#000;color:#fff;padding:2px 6px;border-radius:10px;white-space:nowrap}
+.bot{position:absolute;font-size:48px;z-index:15;text-align:center}
+.bot small{display:block;font-size:10px;background:#000;color:#fff;padding:2px 6px;border-radius:10px;white-space:nowrap}
+.hpbar{width:50px;height:6px;background:#333;border-radius:3px;margin:2px auto;overflow:hidden}
+.hpbar div{height:100%;background:#22c55e;width:100%}
+.hud-top{position:absolute;top:0;left:0;right:0;display:flex;justify-content:space-between;padding:8px;z-index:30;pointer-events:none}
+.hud-top div{background:rgba(0,0,0,.75);padding:6px 9px;border-radius:20px;font-size:11px;font-weight:900}
+.controls{position:absolute;bottom:14px;left:0;right:0;display:flex;justify-content:space-between;padding:0 10px;z-index:30;align-items:flex-end}
+.joy{width:125px;height:125px;background:rgba(255,255,255,.55);border:3px solid #fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:30px;touch-action:none}
+.btn-game{width:62px;height:62px;border-radius:50%;border:2px solid #fff;font-weight:900;font-size:11px;color:#fff;box-shadow:0 3px 8px rgba(0,0,0,.4)}
+.popup{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:#111;padding:18px;border-radius:16px;width:90%;z-index:50;display:none;text-align:center;border:2px solid #ff9d00}
+.popup button{width:100%;padding:12px;border:0;border-radius:10px;font-weight:900;margin-top:8px;font-size:14px}
+.mini{position:absolute;top:55px;left:10px;background:rgba(0,0,0,.7);padding:8px;border-radius:12px;z-index:30;font-size:11px;line-height:1.5}
+.hujan{position:absolute;top:0;left:0;right:0;bottom:0;pointer-events:none;z-index:5;display:none;background:repeating-linear-gradient(115deg,transparent 0 20px,rgba(255,255,255,.25) 20px 21px)}
+</style>
 </head>
-<body style="margin:0;padding:0;background-color:#ffffff;display:flex;justify-content:center;align-items:center;height:100vh;font-family:sans-serif;">
-    Redirecting...
-</body>
-</html>
+<body>
+<div class="screen active" id="s-lobby">
+<div class="top-lobby"><b>🔥 BLOXBID</b><span id="topNama">Bid abid ✔️</span><span>💰 <span id="koinLobby">200</span></span></div>
+<div style="padding:10px 14px 0;display:flex;justify-content:space-between"><b>👥 Teman</b><b style="color:#22c55e" id="onlineCount">🟢 6 Online</b></div>
+<div class="teman-row">
+<div class="teman-item"><div class="pp" style="background:#ff00cc">👑</div><small id="temanOwner">Bid abid</small></div>
+<div class="teman-item"><div class="pp" style="background:#333">A</div><small>ALPH</small></div>
+<div class="teman-item"><div class="pp" style="background:#00e5ff;color:#000">F</div><small>Felix</small></div>
+<div class="teman-item"><div class="pp" style="background:#facc15;color:#000">P</div><small>Bocil_123</small></div>
+<div class="teman-item"><div class="pp" style="background:#22c55e">R</div><small>Rafi</small></div>
+<div class="teman-item"><div class="pp" style="background:#ff69b4">T</div><small>Taher</small></div>
+<div class="teman-item"><div class="pp" style="background:#7b00ff">U</div><small>Umar</small></div>
+</div>
+<div style="padding:0 14px 8px"><b>🎮 Game</b></div>
+<div class="game-row">
+<div class="game-card"><div class="game-thumb" style="background:linear-gradient(135deg,#ff0000,#7b00ff)">🔫</div><div class="game-info"><b>Battle Shoot</b><small>Segera! Tembak-tembakan!</small><button class="btn" style="background:#333;color:#fff;padding:8px" onclick="alert('Battle Shoot masih dikunci! Main BALAP BLOXBID dulu!')">🔒 KUNCI</button></div></div>
+<div class="game-card"><div class="game-thumb" style="background:linear-gradient(135deg,#22c55e,#00e5ff)">🥚</div><div class="game-info"><b>Cari Telur</b><small>Cari telur di kota!</small><button class="btn" style="background:#333;color:#fff;padding:8px" onclick="alert('Cari Telur segera!')">🔒 Segera</button></div></div>
+<div class="game-card" style="border:2px solid #ff9d00"><div class="game-thumb" style="background:linear-gradient(135deg,#ff9d00,#ff00cc)">🏍️</div><div class="game-info"><b>Naik Dan Jelajahi</b><small>BALAP BLOXBID! Keliling kota, naik motor, ke market, GYM, masjid!</small><button class="btn btn-green" style="padding:8px" onclick="keLoading()">▶️ MAIN!</button></div></div>
+</div>
+<div class="card" style="border:2px solid #ff69b4"><b>✏️ GANTI NAMA - <span id="myNama">Bid abid 👑✔️</span></b><br><small id="ownerInfo">Orang pertama masuk = OWNER 👑!</small><input id="inNama" placeholder="Nama lu..."><button class="btn btn-pink" onclick="gantiNama()">SIMPAN NAMA - GAS JADI OWNER!</button><p id="statusNama" style="text-align:center;margin-top:8px;color:#aaa;font-size:13px">Nama lu: Bid abid 👑✔️ - OWNER</p></div>
+<div class="card"><b>🏍️ Motor Lu: <span id="motorLobby">Jalan Kaki</span></b><br><small>100% bisa mabar! Semua yang buka game ini langsung ketemu di kota yang sama!</small><br><button class="btn btn-yellow" onclick="keLoading()">▶️ GAS MASUK KOTA BLOXBID!</button></div>
+</div>
+<div class="screen loading" id="s-loading">
+<h1>BALAP BLOXBID</h1><p style="color:#aaa">made by Bid abid</p><div class="load"></div><p id="loadText">Mempersiapkan kota...</p><p style="color:#ff9d00;font-weight:900;margin-top:10px">KETUK LAYAR UNTUK MASUK</p>
+<button class="btn btn-green" style="width:80%;margin:20px auto;display:block;background:#ff9d00" onclick="masukKota()">KETUK LAYAR UNTUK MASUK</button>
+</div>
+<div class="screen" id="s-kota">
+<div id="kota"><div id="hujan" class="hujan"></div><div id="map">
+<div class="jalan" style="top:450px;left:0;width:2200px;height:110px"></div>
+<div class="jalan" style="top:1000px;left:0;width:2200px;height:110px"></div>
+<div class="jalan" style="top:1600px;left:0;width:2200px;height:110px"></div>
+<div class="jalan" style="left:450px;top:0;width:110px;height:2200px"></div>
+<div class="jalan" style="left:1000px;top:0;width:110px;height:2200px"></div>
+<div class="jalan" style="left:1600px;top:0;width:110px;height:2200px"></div>
+<div class="gedung" style="left:60px;top:60px;width:180px;height:280px;background:#555">🏢<br>GEDUNG<br><small>KOTA</small></div>
+<div class="gedung" style="left:650px;top:60px;width:180px;height:320px;background:#777">🏢<br>APARTEMEN</div>
+<div class="gedung" style="left:1250px;top:60px;width:180px;height:260px;background:#444">🏢<br>TOKO</div>
+<div class="gedung" style="left:1800px;top:60px;width:180px;height:300px;background:#666">🏢<br>KANTOR</div>
+<div class="gedung" style="left:60px;top:700px;width:260px;height:180px;background:#ff3d00">🏪 NEXO MARKET<br><small style="font-size:11px">Beli Camilan</small></div>
+<div class="gedung" style="left:650px;top:700px;width:260px;height:180px;background:#222">🏋️ GYM<br><small>Biar Pukulan Sakit!</small></div>
+<div class="gedung" style="left:1250px;top:700px;width:260px;height:180px;background:#8d6e63">🛖 POS RONDA<br>24 JAM</div>
+<div class="gedung" style="left:1800px;top:700px;width:260px;height:180px;background:#ffeb3b;color:#000">🏍️ TOKO MOTOR<br>BLOXBID</div>
+<div class="gedung" style="left:60px;top:1250px;width:260px;height:180px;background:#00bcd4">🕌 MASJID AL-IKHLAS<br><small>Wudhu + Sholat</small></div>
+<div class="gedung" style="left:650px;top:1250px;width:260px;height:180px;background:#795548">🏠 RUMAH BID ABID<br><small>Bawa NPC Ke Sini!</small></div>
+<div class="gedung" style="left:1250px;top:1250px;width:260px;height:180px;background:#e91e63">🍔 WARUNG<br>BLOXBID</div>
+<div class="gedung" style="left:1800px;top:1250px;width:260px;height:180px;background:#607d8b">🏫 SEKOLAH</div>
+<div style="position:absolute;left:60px;top:1750px;width:500px;height:100px;background:#333;border:4px solid #fff;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900">🏁 BALAP ONTEL - START / FINISH 🏁</div>
+<div style="position:absolute;left:300px;top:1800px;width:80px;height:20px;background:repeating-linear-gradient(90deg,#fff 0 10px,#000 10px 20px)"></div>
+<div style="position:absolute;left:700px;top:500px;font-size:45px">🏍️</div>
+<div style="position:absolute;left:1100px;top:1050px;font-size:45px">🛵</div>
+<div style="position:absolute;left:1700px;top:500px;font-size:45px">🚲</div>
+<div id="bot2" class="bot" style="left:850px;top:850px">🧍<div class="hpbar"><div id="hpNpc"></div></div><small>NPC</small></div>
+<div id="player" style="left:500px;top:500px">🧍<small id="labelNama">Bid abid 👑✔️</small></div>
+<div id="temenWrap"></div>
+</div>
+<div class="hud-top"><div>⏰ <span id="jam">17:00</span> • <span id="waktu">Sore</span></div><div>💰 <span id="koin">200</span> • <span id="hudGrafik">Sedang</span></div><div>📶 100</div></div>
+<div class="mini" id="miniInfo">🎯 MISI: Bawa NPC ke Rumah!<br>🏍️ <span id="motorMini">Jalan Kaki</span><br>💖 <span id="boncengMini">Sendirian</span><br>👑 Owner: <span id="ownerMini">Bid abid</span></div>
+<div class="controls"><div class="joy" id="joy">🕹️</div>
+<div id="btnJalan" style="display:flex;gap:7px;flex-wrap:wrap;justify-content:flex-end">
+<button class="btn-game" style="background:#ff9d00" onclick="aksiMotor()">🏍️<br>Motor</button>
+<button class="btn-game" style="background:#ff69b4" onclick="aksiBonceng()">💖<br>Bonceng</button>
+<button class="btn-game" style="background:#ff0000" onclick="aksiPukul()">👊<br>Pukul</button>
+<button class="btn-game" style="background:#00c853" onclick="aksiAngkut()">🧍<br>Angkut</button>
+<button class="btn-game" style="background:#333" onclick="bukaAtur()">⚙️<br>Atur</button>
+</div>
+<div id="btnMotor" style="display:none;gap:7px;flex-wrap:wrap;justify-content:flex-end">
+<button class="btn-game" style="background:#fff;color:#000" onclick="aksiMotor()">D<br>Turun</button>
+<button class="btn-game" style="background:#333" onclick="gasRem()">R<br>Mundur</button>
+<button class="btn-game" style="background:#ff0000" onclick="gasRem()">REM<br>Stop</button>
+<button class="btn-game" style="background:#ff9d00" onclick="gasPol()">💨<br>GAS</button>
+</div>
+</div>
+<div class="popup" id="popAtur"><h3>⚙️ Pengaturan</h3><p style="color:#aaa;margin:8px 0">Kayak di video! Grafik, Kamera, Suara, Kontrol!</p><button style="background:#fff;color:#000" onclick="setGrafik('Sedang')">Grafik: Sedang</button><button style="background:#fff;color:#000" onclick="setGrafik('Tinggi')">Grafik: Tinggi</button><button style="background:#ff9d00;color:#000" onclick="setGrafik('Ultra')">Grafik: Ultra</button><button style="background:#00e5ff;color:#000" onclick="setGrafik('Ultra + Hujan')">🌧️ Ultra + Hujan</button><button style="background:#22c55e;color:#000" onclick="alert('Kamera: Ikut pemain - ON! Suara: ON! Zoom: ON!')">Kamera: Ikut pemain • Suara: ON • Zoom: ON</button><button style="background:#ff69b4;color:#000" onclick="alert('Kontrol: Joystick + Tombol D/R/REM - Sama kayak video!')">🎮 Atur Kontrol</button><button style="background:#333;color:#fff" onclick="tutupPop()">Tutup</button></div>
+<div class="popup" id="popTempat"><h3 id="tJudul">Tempat</h3><p id="tIsi" style="color:#aaa;margin:10px 0"></p><button style="background:#22c55e;color:#000" onclick="aksiTempat()">✅ GAS MASUK!</button><button style="background:#333;color:#fff" onclick="tutupPop()">NANTI</button></div>
+<div class="popup" id="popMotor"><h3>🏍️ Pilih Motor</h3><button style="background:#fff;color:#000" onclick="pilihMotor('Motor Beat',90)">🛵 Beat - 90 km/jam</button><button style="background:#fff;color:#000" onclick="pilihMotor('Motor NMAX',120)">🏍️ NMAX - 120 km/jam</button><button style="background:#fff;color:#000" onclick="pilihMotor('Motor Ninja',180)">🏍️💨 Ninja - 180 km/jam</button><button style="background:#fff;color:#000" onclick="pilihMotor('Ontel',30)">🚲 Ontel - 30 km/jam - Buat Balap Ontel!</button><button style="background:#facc15;color:#000" onclick="pilihMotor('RX-King 👑',200)">🔥 RX-King 👑 - 200 km/jam - KHUSUS OWNER</button><button style="background:#333;color:#fff" onclick="tutupPop()">TUTUP</button></div>
+<div class="popup" id="popWudhu"><h3>💧 Tempat Wudhu</h3><p style="margin:10px 0">Lu wudhu dulu sebelum masuk masjid!</p><button style="background:#00e5ff;color:#000" onclick="aksiWudhu()">💧 WUDHU SEKARANG!</button><button style="background:#333;color:#fff" onclick="tutupPop()">NANTI</button></div>
+<div class="popup" id="popSholat"><h3>🕌 MASJID AL-IKHLAS</h3><p style="margin:10px 0">Lu udah wudhu! Gas sholat di sajadah!<br><small style="color:#aaa">Dapet +100 koin!</small></p><button style="background:#22c55e;color:#000" onclick="aksiSholat()">🕌 SHOLAT SEKARANG!</button><button style="background:#333;color:#fff" onclick="tutupPop()">NANTI</button></div>
+<div class="popup" id="popMisi"><h3>🎯 MISI BLOXBID!</h3><p style="margin:10px 0">Kill NPC, angkut dia, bawa ke Rumah Bid abid!<br><small style="color:#aaa">NPC nya di deket Masjid!</small></p><button style="background:#22c55e;color:#000" onclick="tutupPop()">GAS! TERIMA MISI!</button></div>
+</div>
+</div>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyD85-zdU4gk2akHM67Olrm2d5-QMt_9MtQ",
+  authDomain: "bloxbid-d5b36.firebaseapp.com",
+  databaseURL: "https://bloxbid-d5b36-default-rtdb.firebaseio.com",
+  projectId: "bloxbid-d5b36",
+  storageBucket: "bloxbid-d5b36.firebasestorage.app",
+  messagingSenderId: "694090287525",
+  appId: "1:694090287525:web:e4bdd47b1e54ade41cc04c",
+  measurementId: "G-QKC4KMHSKS"
+};
+let nama = localStorage.getItem('bloxbid_nama') || 'Bid abid';
+let myId = localStorage.getItem('bloxbid_myid') || ('p'+Math.floor(Math.random()*999999));
+localStorage.setItem('bloxbid_myid', myId);
+let isOwner=false, ownerNama='Bid abid', x=500,y=500,naik=false,motor='Motor Beat',penumpang='',koin=200,jamMenit=17*60,npcHp=100,npcPingsan=false,npcDibawa=false,wudhu=false,db=null;
+let roomKode='BLOXBID-MAIN';
+try{
+  firebase.initializeApp(firebaseConfig); db=firebase.database();
+  db.ref('bloxbid_owner').on('value',snap=>{
+    let data=snap.val();
+    if(!data){ db.ref('bloxbid_owner').set({id:myId,nama:nama,time:Date.now()}); }
+    else { ownerNama=data.nama; isOwner=(data.id===myId); updateOwnerUI(); }
+  });
+  setInterval(()=>{ if(!db) return; db.ref('bloxbid/'+roomKode+'/'+myId).set({nama:nama,x:x,y:y,naik:naik,motor:motor,penumpang:penumpang,owner:isOwner,last:Date.now()}); },100);
+  db.ref('bloxbid/'+roomKode).on('value',snap=>{
+    let data=snap.val()||{}; let wrap=document.getElementById('temenWrap'); if(!wrap) return; wrap.innerHTML=''; let count=0;
+    Object.keys(data).forEach(id=>{ if(id===myId) return; if(Date.now()-data[id].last>5000) return; count++; let t=data[id]; let d=document.createElement('div'); d.className='other'; d.style.left=t.x+'px'; d.style.top=t.y+'px'; d.innerHTML=(t.naik?'🏍️':'🧍')+'<small>'+t.nama+(t.owner?' 👑✔️':'')+(t.penumpang?' + '+t.penumpang+' 💖':'')+'</small>'; wrap.appendChild(d); });
+    document.getElementById('onlineCount').innerText='🟢 '+(5+count)+' Online';
+  });
+}catch(e){}
+function updateOwnerUI(){
+  document.getElementById('statusNama').innerText='Nama lu: '+nama+(isOwner?' 👑✔️ - OWNER BLOXBID':'')+' | '+(isOwner?'LU OWNER!':'Owner: '+ownerNama+' 👑');
+  document.getElementById('ownerInfo').innerText=isOwner?'👑 LU OWNER! Lu yang pertama masuk!':'👑 Owner: '+ownerNama;
+  document.getElementById('topNama').innerText=nama+(isOwner?' 👑✔️':' ✔️');
+  document.getElementById('myNama').innerText=nama+(isOwner?' 👑✔️':'');
+  document.getElementById('temanOwner').innerText=ownerNama+' 👑✔️';
+  document.getElementById('ownerMini').innerText=ownerNama+(isOwner?' (LU!)':'');
+  updatePos();
+}
+function gantiNama(){ let n=document.getElementById('inNama').value.trim(); if(!n){alert('Isi nama dulu!');return;} nama=n; localStorage.setItem('bloxbid_nama',n); if(isOwner && db){ db.ref('bloxbid_owner').update({nama:n}); } alert('Nama lu sekarang: '+n+(isOwner?' 👑✔️ OWNER!':'')); updateOwnerUI(); }
+function keLoading(){ document.getElementById('s-lobby').classList.remove('active'); document.getElementById('s-loading').classList.add('active'); let p=0; let iv=setInterval(()=>{ p+=20; document.getElementById('loadText').innerText='Mempersiapkan kota... '+p+'%'; if(p>=100) clearInterval(iv); },200); }
+function masukKota(){ document.getElementById('s-loading').classList.remove('active'); document.getElementById('s-kota').classList.add('active'); setTimeout(()=>{ document.getElementById('popMisi').style.display='block'; },600); updatePos(); setInterval(jalanJam,1000); }
+function jalanJam(){ jamMenit++; if(jamMenit>=1440) jamMenit=0; let j=Math.floor(jamMenit/60), m=jamMenit%60; document.getElementById('jam').innerText=String(j).padStart(2,'0')+':'+String(m).padStart(2,'0'); document.getElementById('waktu').innerText=j<12?'Pagi':j<15?'Siang':j<18?'Sore':j<19?'Magrib':'Malam'; if(j===18&&m===0) alert('Udah Magrib! Azan Maghrib berkumandang... NPC dikit, pada ke masjid!'); }
+function updatePos(){ let p=document.getElementById('player'); if(!p) return; p.style.left=x+'px'; p.style.top=y+'px'; p.innerHTML=(naik?'🏍️':'🧍')+'<small id="labelNama">'+na
